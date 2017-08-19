@@ -1,0 +1,4 @@
+- hosts: all
+  tasks:
+    - name: Checking connection to server
+      ping:

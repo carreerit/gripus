@@ -1,0 +1,8 @@
+- hosts: all
+  tasks:
+    - name: Checking connection to server
+      ping:
+
+    - name: Print Sample Message
+      debug:
+        msg: "Hello All, Good Morning" 
