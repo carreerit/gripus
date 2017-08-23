@@ -1,0 +1,13 @@
+- hosts: all
+  tasks:
+    - shell: ls /tmp
+      register: out
+
+    - debug:
+        msg: "{{out}}"
+
+    - set_fact:
+        EXIT_STATUS : "{{out.rc}}"
+ 
+    - debug:
+        msg: "{{EXIT_STATUS}}"

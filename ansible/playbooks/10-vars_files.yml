@@ -1,0 +1,8 @@
+- hosts: all
+  vars:
+     SERVICE: httpd
+  vars_files:
+        - vars-from-other-team.yml
+  tasks:
+    - debug:
+        msg: "PACKAGE = {{PACKAGE}}   : SERVICE = {{SERVICE}}"

@@ -1,0 +1,5 @@
+- hosts: all
+  tasks: 
+    - name: Print OS Vendor
+      debug:
+        msg: "OS Vendor = {{ ansible_distribution }}"

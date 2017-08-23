@@ -1,0 +1,3 @@
+- name: Print message
+  debug:
+        msg: "Hello from Play02"

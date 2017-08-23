@@ -1,0 +1,10 @@
+- hosts: redhat
+  become: yes
+  tasks: 
+    - name: RUn a loop
+      debug:
+        msg: "{{item}}"
+      with_items:
+        - httpd
+        - httpd-devel
+        - gcc

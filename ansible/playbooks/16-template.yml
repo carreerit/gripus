@@ -1,0 +1,9 @@
+- hosts: redhat
+  vars:
+    USERNAME: student
+    PASSWORD: student@1
+    IPADDRESS: 10.128.0.2
+  tasks:
+    - template:
+        src: files/sample.j2
+        dest: /tmp/sample

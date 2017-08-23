@@ -1,0 +1,12 @@
+- hosts: all
+  tasks:
+    - name: Create sample file
+      file:
+        path: /tmp/sample.txt
+        state:  touch
+
+    - name: Create demo directory
+      file:
+        path: /opt/demo
+        state: directory
+      become: yes

@@ -1,0 +1,142 @@
+- hosts: redhat
+  become: yes
+  vars:
+    DOWNLOAD_LOC: "/opt"
+    MOD_JK_URL: "http://redrockdigimark.com/apachemirror/tomcat/tomcat-connectors/jk/tomcat-connectors-1.2.42-src.tar.gz"
+    MOD_JK_TAR_FILE: "{{DOWNLOAD_LOC}}"
+
+    TOMCAT_URL: "http://redrockdigimark.com/apachemirror/tomcat/tomcat-9/v9.0.0.M26/bin/apache-tomcat-9.0.0.M26.tar.gz"
+    WAR_FILE_URL: "https://github.com/carreerit/cogito/raw/master/appstack/student.war"
+    MYSQL_JAR_URL: "https://github.com/carreerit/cogito/raw/master/appstack/mysql-connector-java-5.1.40.jar"
+
+    DBUSERNAME: "student"
+    DBPASSWORD: "student@1"
+    DBIP: "localhost"
+
+  tasks:
+
+##### Web Server Installation & Configuration
+    - name: Install Web Server Packages
+      package:
+        name: "{{item}}" 
+        state: latest
+      with_items:
+        - httpd
+        - httpd-devel
+        - gcc
+        - java
+
+    - name: Download and extract Mod_JK 
+      unarchive:
+        src: "{{MOD_JK_URL}}"
+        dest: "{{MOD_JK_TAR_FILE}}"
+        remote_src: True
+    
+    - name: Check the tomcat directory path
+      shell: "ls -d {{DOWNLOAD_LOC}}/tomcat-connectors*"
+      register: out
+
+    - name: Define Mod_JK location 
+      set_fact:
+        MOD_JK_LOC: "{{out.stdout}}"
+
+    - name: Compile tomcat tomcat-connectors
+      shell: ./configure --with-apxs=/bin/apxs && make && make install
+      args:
+        chdir: "{{MOD_JK_LOC}}/native"
+
+    - name: Copy mod_jk config files 
+      copy:
+        dest: "/etc/httpd/conf.d/{{item}}"
+        src: "files/{{item}}"
+      with_items:
+        - mod_jk.conf
+        - workers.properties
+
+#### Installation and configuration of Tomcat
+
+    - name: Download and extract tomcat 
+      unarchive:
+        src: "{{TOMCAT_URL}}"
+        dest: "{{DOWNLOAD_LOC}}"
+        remote_src: True
+
+    - name: check the tomcat location
+      shell: ls -d {{DOWNLOAD_LOC}}/apache-tomcat*
+      register: out
+
+    - name: Define TOMCAT location 
+      set_fact:
+        TOMCAT_LOC: "{{out.stdout}}"
+
+    - name: Get list of webapps
+      shell: ls -1 {{TOMCAT_LOC}}/webapps
+      register: out
+
+    - name: Remove webapps conetent
+      file:
+        path: "{{TOMCAT_LOC}}/webapps/{{item}}"
+        state: absent
+      with_items: "{{out.stdout_lines}}"
+
+    - name: Download war file
+      get_url:
+        url: "{{WAR_FILE_URL}}"
+        dest: "{{TOMCAT_LOC}}/webapps/student.war"
+
+    - name: Download Jar file 
+      get_url:
+        url: "{{MYSQL_JAR_URL}}"
+        dest: "{{TOMCAT_LOC}}/lib/mysql-connector-java-5.1.40.jar"
+
+    - name: Update context.xml file
+      template:
+        src: "files/context.xml.j2"
+        dest: "{{TOMCAT_LOC}}/conf/context.xml"
+
+### mariadb installationn and configuration
+    - name: Install mariadb Server
+      package:
+        name: "{{item}}"
+        state: latest
+      with_items:
+        - mariadb
+        - mariadb-server
+        - python-pip
+        - mariadb-devel 
+        - python-devel 
+
+    - name: Start mariadb 
+      service:
+        name: mariadb
+        state: started
+        enabled: yes
+
+    - name: Copy sql file 
+      template:
+        src: files/student.sql
+        dest: /tmp/student.sql
+
+    - name: Install the Python MySQLB module
+      pip: name=MySQL-python
+
+    - name: Create DB
+      mysql_db:
+        state: import
+        name: all
+        target: /tmp/student.sql
+
+
+### Restart services:
+    - name: restart web Server
+      service:
+        name: httpd
+        state: restarted
+        enabled: yes 
+
+    - name: Start tomcat 
+      shell: nohup "{{TOMCAT_LOC}}/bin/startup.sh"
+
+
+
+

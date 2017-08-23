@@ -1,0 +1,8 @@
+- hosts: all
+  vars_prompt: 
+    - name: PACKAGE
+      prompt: Enter Package Name
+      private: no
+  tasks:
+        - debug:
+                msg: "PACKAGE = {{PACKAGE}}"

@@ -1,0 +1,6 @@
+- name: Check conenctionn to server
+  ping:
+ 
+- name: Print message
+  debug:
+    msg: "Hello from Play01"

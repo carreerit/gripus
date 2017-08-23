@@ -1,0 +1,4 @@
+- hosts: all
+  tasks:
+    - include: play01.yml
+    - include: play02.yml

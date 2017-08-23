@@ -1,1 +1,7 @@
-172.31.18.113
+[redhat]
+172.31.18.113 PACKAGE=httpd
+[ubuntu]
+172.31.25.106 PACKAGE=apache2 
+[ubuntu:vars]
+ansible_user=ubuntu
+

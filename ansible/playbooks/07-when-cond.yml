@@ -1,0 +1,14 @@
+- hosts: all
+  become: yes
+  tasks: 
+    - name: Install web server
+      yum:
+        name: httpd
+        state: latest
+      when: ansible_distribution == 'RedHat'
+
+    - name: Install web server
+      apt:
+        name: apache2
+        state: latest
+      when: ansible_distribution == 'Ubuntu'
