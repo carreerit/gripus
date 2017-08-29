@@ -1,0 +1,4 @@
+- hosts: redhat
+  become: yes
+  roles:
+        - webserver

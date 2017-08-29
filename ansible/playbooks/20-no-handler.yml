@@ -1,0 +1,12 @@
+- hosts: redhat
+  tasks:
+    - name: some shell command
+      #shell: "true"
+      debug: msg='Hello'
+      register: out
+ 
+
+    - name: Run Some task only if shell is changed
+      debug:
+        msg: "{{out}}"
+      when: out.changed == true

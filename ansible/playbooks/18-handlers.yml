@@ -1,0 +1,18 @@
+- hosts: redhat
+  become: yes
+  vars:
+        USERNAME: student
+        PASSWORD: student@1
+        IPADDRESS: localhost
+  tasks:
+    - name: Copy config file
+      template:
+        src: files/sample.j2
+        dest: /tmp/sample
+      notify: Restart httpd
+
+  handlers:
+    - name: Restart httpd
+      service:
+        name: httpd
+        state: restarted

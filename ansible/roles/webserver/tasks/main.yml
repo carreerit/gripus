@@ -1,0 +1,29 @@
+- name: Install Web Server
+  package:
+    name: "{{item}}"
+    state: latest
+  with_items: "{{pack_name}}"
+  notify: Restart HTTPD
+
+- name: Download and extract mod_jk
+  unarchive:
+    src: "{{mod_jk_url}}"
+    dest: /opt
+    remote_src: true
+
+- name: Install mod_jk
+  shell: ./configure --with-apxs=/bin/apxs && make && make install
+  args:
+        chdir: /opt/tomcat-connectors-1.2.42-src/native
+
+- name: Copy mod_jk.conf file
+  copy:
+    src: mod_jk.conf
+    dest: /etc/httpd/conf.d/httpd.conf
+  notify: Restart HTTPD
+
+- name: COpy workers.properties
+  template:
+    src: workers.properties
+    dest: /etc/httpd/conf.d/workers.properties
+  notify: Restart HTTPD

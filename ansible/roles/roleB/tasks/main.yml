@@ -1,0 +1,7 @@
+- name: Running Task1 in RoleB
+  debug:
+        msg: Running Task1 in RoleB
+
+- name: Priting sample var
+  debug:
+   msg: "{{sample}}"

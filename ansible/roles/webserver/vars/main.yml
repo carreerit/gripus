@@ -1,0 +1,5 @@
+pack_name:   
+   - httpd
+   - httpd-devel
+mod_jk_url: http://www-eu.apache.org/dist/tomcat/tomcat-connectors/jk/tomcat-connectors-1.2.42-src.tar.gz
+TOMCAT_IP: localhost

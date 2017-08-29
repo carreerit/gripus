@@ -1,0 +1,3 @@
+- name: Running Task1 in RoleA
+  debug:
+      msg: Running Task1 in RoleA

@@ -1,0 +1,43 @@
+- name: Create EC2 Instance
+  hosts: localhost
+  tasks:
+    - ec2:
+        key_name: admin
+        instance_type: t2.micro
+        image: ami-4f0b4e20
+        wait: yes
+        group: all 
+        count: 1
+        vpc_subnet_id: subnet-212e0b48
+        assign_public_ip: yes
+        region: ap-south-1
+      register: out
+   
+    - debug:
+        msg: "{{out}}"
+
+    - add_host:
+        hostname: "{{item.private_ip}}"
+        groupname: webserver
+      with_items: "{{out.instances}}"
+
+    - wait_for:
+        host: "{{ item.private_ip }}"
+        port: 22
+        delay: 60
+        timeout: 320
+        state: started
+      with_items: "{{ out.instances }}"
+
+- name: Install Web Server
+  hosts: webserver
+  become: yes
+  tasks:
+    - name: Install web server
+      package: 
+        name: httpd
+        state: installed
+    - name: Start Web Server
+      service:
+        name: httpd
+        state: started

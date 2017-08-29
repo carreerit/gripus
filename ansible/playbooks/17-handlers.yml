@@ -1,0 +1,9 @@
+- hosts: redhat
+  tasks:
+    - name: Task1
+      debug:
+        msg: Task1
+  
+    - name: Task2
+      debug:
+        msg: Task2 
