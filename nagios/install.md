@@ -15,3 +15,5 @@
 ```
 http://13.123.24.45/nagiosxi
 ```
+
+## Ref link : `https://assets.nagios.com/downloads/nagiosxi/docs/Installing-Nagios-XI-Manually-on-Linux.pdf#_ga=2.30518843.526964288.1506992094-797867200.1504627904`
